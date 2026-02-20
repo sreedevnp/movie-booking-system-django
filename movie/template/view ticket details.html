@@ -1,0 +1,75 @@
+{% extends 'userp.html' %}
+{% block content %}
+
+<style>
+/* PUSH CONTENT BELOW NAVBAR */
+.ticket-wrapper {
+    margin-top: 120px;   /* adjust if your navbar height changes */
+}
+
+/* SECTION TITLE */
+.ticket-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* UNDERLINE EFFECT */
+.ticket-title::after {
+    content: "";
+    width: 80px;
+    height: 4px;
+    background: #ff005d;
+    display: block;
+    margin: 12px auto 0;
+    border-radius: 2px;
+}
+
+/* TICKET CARD */
+.ticket-card {
+    background: #1f2937;
+    padding: 22px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease;
+}
+
+.ticket-card:hover {
+    transform: translateY(-4px);
+}
+
+.ticket-card p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+.ticket-card small {
+    color: #9ca3af;
+}
+</style>
+
+<div class="container ticket-wrapper">
+
+    <h2 class="ticket-title">My Tickets</h2>
+
+    {% for t in tickets %}
+    <div class="ticket-card">
+        <p><b>Movie:</b> {{ t.movie }}</p>
+        <p><b>Theatre:</b> {{ t.theatre }}</p>
+        <p><b>Date:</b> {{ t.date }} | {{ t.time }}</p>
+        <p><b>Seat Name:</b> {{ t.seats }} &nbsp; | &nbsp; <b>No. of Seats:</b> {{ t.seat_count }}</p>
+        <p><b>Amount:</b> ₹{{ t.amount }}</p>
+        <p><small>Booked on {{ t.booked_on }}</small></p>
+    </div>
+    {% empty %}
+    <p class="text-center text-light">No tickets booked yet.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

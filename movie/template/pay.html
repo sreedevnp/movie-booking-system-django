@@ -1,0 +1,84 @@
+{% extends 'userp.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.pay-box {
+    width: 420px;
+    margin: 180px auto;
+    background: #1f2937;
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+}
+
+.pay-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+.pay-box label {
+    font-size: 14px;
+    color: #d1d5db;
+}
+
+.pay-box input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    background: #111827;
+    color: white;
+    font-size: 16px;
+}
+
+.pay-box input:focus {
+    outline: none;
+    border: 1px solid #22c55e;
+}
+
+.pay-box button {
+    width: 100%;
+    padding: 14px;
+    background: #22c55e;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pay-box button:hover {
+    background: #16a34a;
+    transform: scale(1.02);
+}
+
+.amount-note {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #9ca3af;
+}
+</style>
+
+<div class="pay-box">
+
+    <label>Amount to Pay</label>
+<input type="text" value="₹ {{ amount }}" readonly>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Confirm Payment</button>
+</form>
+
+    <p class="amount-note">
+        Secure payment • Flickzy
+    </p>
+</div>
+
+{% endblock %}

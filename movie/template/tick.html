@@ -1,0 +1,58 @@
+{% extends 'userp.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.ticket {
+    width: 520px;
+    margin: 160px auto;
+    background: #1f2937;
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+.ticket h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #22c55e;
+}
+
+.ticket-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.ticket-row span {
+    color: #9ca3af;
+}
+
+.ticket-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #9ca3af;
+}
+</style>
+
+<div class="ticket">
+    <h2>🎟 Movie Ticket</h2>
+
+    <div class="ticket-row"><span>Email</span><b>{{ email }}</b></div>
+    <div class="ticket-row"><span>Movie</span><b>{{ movie }}</b></div>
+    <div class="ticket-row"><span>Theatre</span><b>{{ theatre }}</b></div>
+    <div class="ticket-row"><span>Date</span><b>{{ date }}</b></div>
+    <div class="ticket-row"><span>Time</span><b>{{ time }}</b></div>
+    <div class="ticket-row"><span>Seats</span><b>{{ seats }}</b></div>
+    <div class="ticket-row"><span>Tickets</span><b>{{ count }}</b></div>
+    <div class="ticket-row"><span>Total Paid</span><b>₹ {{ amount }}</b></div>
+
+    <div class="ticket-footer">
+        Enjoy your movie 🍿 | Flickzy
+    </div>
+</div>
+
+{% endblock %}

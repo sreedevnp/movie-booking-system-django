@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flickzy - Login</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: url("{% static 'regis/img/flickzy_bg.png' %}") no-repeat center / cover;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* GLASS CARD */
+.glass-box {
+    width: 380px;
+    padding: 36px 34px;
+    border-radius: 18px;
+
+    background: rgba(20, 20, 30, 0.65);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+
+    animation: fadeUp .8s ease forwards;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* TITLE */
+.glass-box h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 22px;
+    background: linear-gradient(90deg,#ff7cab,#ff005d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* INPUT GROUP */
+.input-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 42px 14px 12px;
+    font-size: 15px;
+
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.35);
+    color: white;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-bottom-color: #ff7cab;
+}
+
+/* FLOATING LABEL (PURE CSS) */
+.input-group label {
+    position: absolute;
+    left: 12px;
+    top: 14px;
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    pointer-events: none;
+    transition: 0.2s ease;
+}
+
+
+.input-group input {
+    width: 100%;
+    box-sizing: border-box;   /* 🔥 THIS FIXES THE ISSUE */
+
+    padding: 14px 42px 14px 12px;
+    font-size: 15px;
+
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.35);
+    color: white;
+    outline: none;
+}
+
+
+/* EYE ICON */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+}
+
+.toggle-password:hover {
+    color: #ff7cab;
+}
+
+/* FORGOT */
+.forgot-password {
+    text-align: right;
+    margin-bottom: 16px;
+}
+
+.forgot-password a {
+    color: #ff7cab;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.forgot-password a:hover {
+    color: #ff005d;
+}
+
+/* LOGIN BUTTON */
+.login-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+
+    background: linear-gradient(90deg,#ff005d,#ff7cab);
+    border: none;
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+
+    box-shadow: 0 8px 22px rgba(255,0,93,0.35);
+    transition: 0.25s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255,0,93,0.5);
+}
+
+/* FOOTER TEXT */
+.login-text {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+}
+
+.login-text a {
+    color: #ff7cab;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-text a:hover {
+    color: #ff005d;
+}
+</style>
+
+</head>
+<body>
+
+<div class="glass-box">
+
+    <h2>Flickzy — Login</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <input name="email" type="email" required placeholder=" ">
+            <label>Email address</label>
+        </div>
+
+        <div class="input-group">
+            <input name="password" type="password" id="pwd" required placeholder=" ">
+            <label>Password</label>
+            <span class="toggle-password" onclick="togglePwd()">👁</span>
+        </div>
+
+        <p class="forgot-password">
+            <a href="/forgot_password/">Forgot Password?</a>
+        </p>
+
+        <button type="submit" class="login-btn">Login</button>
+
+        <p class="login-text">
+            Don't have an account?
+            <a href="{% url 'registration' %}">Create account</a>
+        </p>
+
+    </form>
+</div>
+
+<script>
+/* Floating label */
+document.querySelectorAll('.input-group input').forEach(function (input) {
+    input.addEventListener("focus", function () {
+        let label = this.nextElementSibling;
+        label.style.top = "-10px";
+        label.style.fontSize = "12px";
+        label.style.color = "#ff7cab";
+    });
+
+    input.addEventListener("blur", function () {
+        let label = this.nextElementSibling;
+        if (!this.value) {
+            label.style.top = "12px";
+            label.style.fontSize = "15px";
+            label.style.color = "rgba(255,255,255,0.7)";
+        }
+    });
+
+    if (input.value) {
+        let label = input.nextElementSibling;
+        label.style.top = "-10px";
+        label.style.fontSize = "12px";
+        label.style.color = "#ff7cab";
+    }
+});
+
+/* Show / Hide Password */
+function togglePwd() {
+    let field = document.getElementById("pwd");
+    field.type = field.type === "password" ? "text" : "password";
+}
+</script>
+
+</body>
+</html>

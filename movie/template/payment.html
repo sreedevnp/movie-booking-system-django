@@ -1,0 +1,125 @@
+{% extends 'userp.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .method img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.payment-page {
+    width: 90%;
+    margin: 160px auto 40px auto;
+    color: #fff;
+    font-family: Arial;
+}
+
+/* HEADER */
+.payment-header {
+    background: #2C3242;
+    padding: 20px 25px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+}
+
+.payment-header h2 {
+    margin-bottom: 10px;
+}
+
+/* SUMMARY BOX */
+.summary-card {
+    background: #1f2937;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+}
+
+.summary-card p {
+    margin: 6px 0;
+}
+
+/* PAYMENT OPTIONS */
+.payment-methods {
+    background: #2C3242;
+    padding: 25px;
+    border-radius: 14px;
+}
+
+.method {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: #111827;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.method:hover {
+    background: #374151;
+}
+
+.method img {
+    width: 36px;
+}
+
+/* PAY BUTTON */
+.pay-btn {
+    margin-top: 25px;
+    width: 100%;
+    background: #22c55e;
+    border: none;
+    padding: 14px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.pay-btn:hover {
+    background: #16a34a;
+}
+</style>
+
+
+<div class="payment-page">
+
+    <!-- 🔹 HEADER -->
+    <div class="payment-header" style="margin-top: 20px;">
+        <h2>Confirm & Pay</h2>
+        <p>{{ movie.movie_name }} ({{ movie.lang }})</p>
+        <p>{{ theatre.theatre_name }} • {{ date }} • {{ time }}</p>
+    </div>
+
+    <!-- 🔹 BOOKING SUMMARY -->
+    <div class="summary-card">
+        <p><b>Selected Seats:</b> {{ seats }}</p>
+        <p><b>Tickets:</b> {{ seat_count }}</p>
+        <p><b>Total Amount:</b> ₹{{ total_price }}</p>
+    </div>
+
+    <!-- 🔹 PAYMENT METHODS -->
+    <div class="payment-methods">
+        <h3>Payment</h3>
+
+<!--        <div class="method">-->
+<!--            <img src="{% static 'user/img/credits.png' %}">-->
+<!--            <span>Credits</span>-->
+        </div>
+        <form action="{% url 'payment_start' %}" method="post">
+    {% csrf_token %}
+
+    <input type="hidden" name="total_price" value="{{ total_price }}">
+
+    <button class="pay-btn">Pay ₹{{ total_price }}</button>
+</form>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

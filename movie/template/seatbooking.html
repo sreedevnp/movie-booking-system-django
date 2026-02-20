@@ -1,0 +1,388 @@
+{% extends 'userp.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* MAIN WRAPPER */
+.seat-page {
+    width: 90%;
+    margin: 30px auto;
+    color: #fff;
+    font-family: Arial;
+}
+
+/* BOOKING DETAILS */
+.booking-details {
+    width: 280px;
+    position: absolute;
+    left: 40px;
+    top: 140px;   /* ⬅ pushed below navbar */
+    background: #2C3242;
+}
+.booking-details {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+
+/* SCREEN */
+.screen {
+    background: #e5e7eb;
+    color: #000;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 30px auto;
+    width: 60%;
+    font-weight: bold;
+}
+
+/* CATEGORY */
+.category-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 25px 0 10px;
+}
+
+/* SEATS */
+.seat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 650px;
+}
+
+.seat {
+    width: 34px;
+    height: 34px;
+    background: #ffffff;
+    color: #000;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.seat.selected {
+    background: #22c55e;
+    color: #fff;
+}
+
+/* SUMMARY */
+.summary-box {
+    background: #2C3242;
+    padding: 20px;
+    border-radius: 14px;
+    margin-top: 35px;
+    width: 60%;
+}
+
+.pay-btn {
+    margin-top: 15px;
+    background: #ff005d;
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+    /* CENTER WHOLE SEAT AREA */
+.seat-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* CENTER CATEGORY BLOCK */
+.category-title {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* CENTER SEAT GRID */
+.seat-row {
+    display: grid;
+    grid-template-columns: repeat(15, 36px); /* 15 seats per row */
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+/* CENTER SCREEN */
+.screen {
+    width: 60%;
+    margin: 25px auto;
+}
+
+/* CENTER SUMMARY */
+.summary-box {
+    margin: 40px auto;
+}
+.seat:hover {
+    background: #22c55e;
+    color: #fff;
+    transform: scale(1.05);
+    transition: 0.2s;
+}
+
+.seat.selected {
+    background: #22c55e;
+    color: white;
+}
+/* TOP LAYOUT */
+.seat-page {
+    width: 100%;
+    position: relative;
+}
+
+/* LEFT SIDE MOVIE DETAILS */
+.booking-details {
+    width: 280px;
+    position: absolute;
+    left: 40px;
+    top: 40px;
+    background: #2C3242;
+}
+
+/* ICON STYLE */
+.booking-details i {
+    color: #ff005d;
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* PUSH SEATS TO CENTER */
+.screen,
+.category-title,
+.seat-row,
+.summary-box {
+    margin-left: auto;
+    margin-right: auto;
+}
+/* ROW WRAPPER */
+.row-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* ROW LABEL */
+.row-label {
+    width: 22px;
+    font-weight: bold;
+    color: #9ca3af;
+    text-align: center;
+}
+
+    .seat.booked {
+    background: #6b7280;
+    color: #fff;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+</style>
+<br><br><br>
+<div class="seat-page">
+
+
+    <!-- 🔹 BOOKING DETAILS (BELOW NAVBAR) -->
+    <div class="booking-details">
+    <p><i class="icofont icofont-movie"></i>
+        <b>Movie:</b> {{ movie.movie_name }} ({{ movie.lang }})
+    </p>
+
+    <p><i class="icofont icofont-building"></i>
+        <b>Theatre:</b> {{ theatre.theatre_name }}
+    </p>
+
+    <p><i class="icofont icofont-calendar"></i>
+        <b>Date:</b> {{ date }}
+    </p>
+
+    <p><i class="icofont icofont-clock-time"></i>
+        <b>Show Time:</b> {{ time }}
+    </p>
+</div>
+<br><br><br><br><br><br>
+
+    <!-- 🔹 SCREEN -->
+    <div class="screen">SCREEN THIS WAY</div>
+
+    <!-- 🔹 SEATS FROM ADMIN -->
+    <!-- 🔹 SEAT CATEGORIES -->
+{% for s in seat_categories %}
+
+    <div class="category-title">
+        {{ s.seat_name|title }} – ₹{{ s.rates }}
+        <span style="color:#9ca3af;">({{ s.number }} seats)</span>
+    </div>
+
+    <div class="seat-row">
+        {% for i in "x"|ljust:s.number %}
+            <div class="seat"
+                 data-seat="{{ s.seat_name }}-{{ forloop.counter }}"
+                 onclick="toggleSeat(this, {{ s.rates }})">
+                {{ forloop.counter }}
+            </div>
+        {% endfor %}
+    </div>
+
+{% empty %}
+    <p>No seats added by admin</p>
+{% endfor %}
+
+
+    <!-- 🔹 SUMMARY -->
+    <div class="summary-box">
+        <p><b>Selected Seats:</b> <span id="seatCount">0</span></p>
+        <p><b>Total Price:</b> ₹<span id="totalPrice">0</span></p>
+        <button class="pay-btn" onclick="goToPayment()">Proceed to Pay</button>
+    </div>
+
+</div>
+
+<script>
+/* ================= GLOBAL VARIABLES ================= */
+let seatCount = 0;
+let totalPrice = 0;
+let selectedSeats = [];
+
+/* ================= ROW LABEL + SEAT CODE GENERATION ================= */
+document.addEventListener("DOMContentLoaded", function () {
+
+    const seatsPerRow = 15;
+    const seatRows = document.querySelectorAll(".seat-row");
+
+    let globalRowIndex = 0; // ✅ keeps row labels unique across ALL categories
+
+    seatRows.forEach(row => {
+
+        const seats = Array.from(row.children);
+        row.innerHTML = "";
+
+        for (let i = 0; i < seats.length; i += seatsPerRow) {
+
+            /* ---------- ROW WRAPPER ---------- */
+            const rowWrapper = document.createElement("div");
+            rowWrapper.className = "row-wrapper";
+
+            /* ---------- ROW LABEL (A, B, C...) ---------- */
+            const rowLabel = document.createElement("div");
+            rowLabel.className = "row-label";
+
+            const rowChar = String.fromCharCode(65 + globalRowIndex); // A-Z
+            rowLabel.innerText = rowChar;
+
+            rowWrapper.appendChild(rowLabel);
+
+            /* ---------- SEAT ROW ---------- */
+            const newRow = document.createElement("div");
+            newRow.className = "seat-row";
+
+            seats.slice(i, i + seatsPerRow).forEach((seat, idx) => {
+
+                const seatNo = idx + 1;
+                const seatCode = rowChar + seatNo;
+
+                seat.innerText = seatCode;
+                seat.dataset.seatcode = seatCode;
+
+                newRow.appendChild(seat);
+            });
+
+            rowWrapper.appendChild(newRow);
+            row.parentNode.insertBefore(rowWrapper, row);
+
+            globalRowIndex++; // ✅ CONTINUE ROW LETTER
+        }
+
+        row.remove();
+    });
+});
+
+/* ================= SEAT SELECT / UNSELECT ================= */
+function toggleSeat(el, price) {
+
+    const seatCode = el.dataset.seatcode;
+
+    if (el.classList.contains("selected")) {
+
+        el.classList.remove("selected");
+        seatCount--;
+        totalPrice -= price;
+        selectedSeats = selectedSeats.filter(s => s !== seatCode);
+
+    } else {
+
+        el.classList.add("selected");
+        seatCount++;
+        totalPrice += price;
+        selectedSeats.push(seatCode);
+    }
+
+    /* ---------- UPDATE SUMMARY ---------- */
+    document.getElementById("seatCount").innerText = seatCount;
+    document.getElementById("totalPrice").innerText = totalPrice;
+
+    document.getElementById("selectedSeatsText")?.remove();
+    const p = document.createElement("p");
+    p.id = "selectedSeatsText";
+    p.innerHTML = "<b>Seats:</b> " + selectedSeats.join(", ");
+    document.querySelector(".summary-box").prepend(p);
+}
+
+/* ================= GO TO PAYMENT ================= */
+function goToPayment() {
+
+    if (selectedSeats.length === 0) {
+        alert("Please select at least one seat");
+        return;
+    }
+
+    const movieId = "{{ movie.id }}";
+    const theatreId = "{{ theatre.id }}";
+    const date = "{{ date }}";
+    const time = "{{ time }}";
+
+    const seats = selectedSeats.join(",");
+    const count = selectedSeats.length;
+    const total = totalPrice;
+
+    const url =
+        `/payment/?movie=${movieId}` +
+        `&theatre=${theatreId}` +
+        `&date=${date}` +
+        `&time=${time}` +
+        `&seats=${seats}` +
+        `&count=${count}` +
+        `&total=${total}`;
+
+    window.location.href = url;
+}
+
+    // 🔒 Disable already booked seats
+const bookedSeats = {{ booked_seats|safe }};
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".seat").forEach(seat => {
+        const code = seat.dataset.seatcode;
+        if (bookedSeats.includes(code)) {
+            seat.classList.add("booked");
+        }
+    });
+});
+
+</script>
+
+
+
+{% endblock %}

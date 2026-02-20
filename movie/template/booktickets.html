@@ -1,0 +1,231 @@
+{% extends 'userp.html' %}
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Booking</title>
+
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'user/css/style.css' %}">
+
+<style>
+body { background:#1A1C26; font-family:Arial; color:#fff; }
+.movie-container { width:90%; margin:auto; padding-bottom:40px; }
+.movie-title { font-size:32px; margin-top:25px; font-weight:bold; }
+
+.movie-tags span {
+    background:#e6e6e6; color:#111; padding:6px 12px;
+    margin-right:8px; border-radius:8px; font-size:14px;
+}
+
+.dates { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+.date-card {
+    background:white; color:#333; width:70px; padding:10px;
+    border-radius:10px; cursor:pointer; border:1px solid #ccc;
+    text-align:center; font-weight:600;
+}
+.date-card.active { background:#e40046; color:white; transform:translateY(-4px); }
+
+.locations { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
+.location-card {
+    background:white; padding:10px 20px; border-radius:10px;
+    font-weight:bold; cursor:pointer; color:#333;
+}
+.location-card.active { background:#ff005d; color:white; }
+
+#theatre-container { margin-top:22px; }
+
+.theatre-card {
+    background:#2C3242; padding:18px; border-radius:12px;
+    margin-bottom:18px; display:none; cursor:pointer;
+}
+
+.theatre-card h2 { margin:0 0 12px 0; font-size:26px; color:white; }
+
+.showtimes { display:flex; gap:12px; flex-wrap:wrap; }
+.time-box {
+    background:#e9ffe9; color:#28a745; border:1px solid #28a745;
+    padding:10px 16px; border-radius:8px; cursor:pointer;
+    font-weight:700;
+}
+.time-box.active { background:#28a745; color:white; }
+
+.book-btn {
+    background:#ff005d; color:white; padding:12px 20px;
+    border-radius:10px; border:none; cursor:pointer;
+    font-size:18px; display:none; margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+<br><br>
+<section class="portfolio-area pt-60">
+<div class="movie-container">
+
+<!-- MOVIE DETAILS -->
+<h1 class="movie-title">{{ key.movie_name }} - ({{ key.lang }})</h1>
+
+<div class="movie-tags" style="margin-top:10px;">
+    <span>Movie runtime: {{ key.duration }}</span>
+    <span>{{ key.certificate }}</span>
+    <span>{{ key.genre }}</span>
+</div>
+
+<!-- DATE SELECTION -->
+<div class="dates">
+{% for d in dates %}
+    <div class="date-card" data-date="{{ d.day }}{{ d.date }}{{ d.month }}">
+        <div>{{ d.day }}</div>
+        <div>{{ d.date }}</div>
+        <div>{{ d.month }}</div>
+    </div>
+{% endfor %}
+</div>
+
+<!-- LOCATION SELECTION -->
+<h3 style="margin-top:30px;">Select Location</h3>
+<div class="locations">
+{% for loc in locations %}
+    <div class="location-card" data-location="{{ loc.id }}">
+        {{ loc.location }}
+    </div>
+{% endfor %}
+</div>
+
+<!-- THEATRES -->
+<div id="theatre-container">
+{% for t in theatres %}
+<div class="theatre-card"
+    data-theatre="{{ t.id }}"
+    data-location="{{ t.location }}">
+
+    <h2>{{ t.theatre_name }}</h2>
+
+    <div class="showtimes">
+        {% for tm in times %}
+        <div class="time-box" data-time="{{ tm }}">{{ tm }}</div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+</div>
+
+<button id="book-button" class="book-btn">Book Tickets</button>
+
+</div>
+</section>
+
+<script>
+// ---------------------------------------------
+// VARIABLES TO STORE USER SELECTIONS
+// ---------------------------------------------
+let selectedDate = null;
+let selectedTime = null;
+let selectedTheatreId = null;
+let selectedLocationId = null;
+
+const bookBtn = document.getElementById("book-button");
+
+// ---------------------------------------------
+// SHOW BUTTON ONLY IF ALL ARE SELECTED
+// ---------------------------------------------
+function checkShowButton() {
+    if (selectedDate && selectedLocationId && selectedTheatreId && selectedTime) {
+        bookBtn.style.display = "inline-block";
+    } else {
+        bookBtn.style.display = "none";
+    }
+}
+
+// ---------------------------------------------
+// DATE CLICK
+// ---------------------------------------------
+document.querySelectorAll(".date-card").forEach(card => {
+    card.addEventListener("click", () => {
+        document.querySelectorAll(".date-card").forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+
+        selectedDate = card.dataset.date;
+        checkShowButton();
+    });
+});
+
+// ---------------------------------------------
+// LOCATION CLICK
+// ---------------------------------------------
+document.querySelectorAll(".location-card").forEach(loc => {
+    loc.addEventListener("click", () => {
+
+        document.querySelectorAll(".location-card").forEach(l => l.classList.remove("active"));
+        loc.classList.add("active");
+
+        selectedLocationId = loc.dataset.location;
+
+        // SHOW ONLY THEATRES IN THIS LOCATION
+        document.querySelectorAll(".theatre-card").forEach(tc => {
+            if (String(tc.dataset.location) === String(selectedLocationId)) {
+                tc.style.display = "block";
+            } else {
+                tc.style.display = "none";
+                tc.classList.remove("active");
+            }
+        });
+
+        selectedTheatreId = null;
+        selectedTime = null;
+        document.querySelectorAll(".time-box").forEach(tb => tb.classList.remove("active"));
+        checkShowButton();
+    });
+});
+
+// ---------------------------------------------
+// THEATRE CLICK
+// ---------------------------------------------
+document.addEventListener("click", function(e) {
+    let th = e.target.closest(".theatre-card");
+    if (!th) return;
+
+    document.querySelectorAll(".theatre-card").forEach(t => t.classList.remove("active"));
+    th.classList.add("active");
+
+    selectedTheatreId = th.dataset.theatre;
+    selectedTime = null;
+    document.querySelectorAll(".time-box").forEach(tb => tb.classList.remove("active"));
+
+    checkShowButton();
+});
+
+// ---------------------------------------------
+// TIME CLICK
+// ---------------------------------------------
+document.addEventListener("click", function(e) {
+    if (!e.target.classList.contains("time-box")) return;
+
+    document.querySelectorAll(".time-box").forEach(tb => tb.classList.remove("active"));
+    e.target.classList.add("active");
+
+    selectedTime = e.target.dataset.time;
+    checkShowButton();
+});
+
+// ---------------------------------------------
+// BOOK BUTTON CLICK
+// ---------------------------------------------
+bookBtn.addEventListener("click", () => {
+    const movieId = "{{ key.id }}";
+
+    const url =
+        `/seat_booking/?movie=${movieId}&theatre=${selectedTheatreId}&date=${selectedDate}&time=${selectedTime}`;
+
+    window.location.href = url;
+});
+</script>
+
+</body>
+</html>
+
+{% endblock %}

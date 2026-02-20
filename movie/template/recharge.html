@@ -1,0 +1,87 @@
+{% extends 'userp.html' %}
+{% block content %}
+
+<style>
+.recharge-box {
+    width: 420px;
+    margin: 180px auto;
+    background: #1f2937;
+    padding: 30px;
+    border-radius: 14px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.recharge-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.recharge-info {
+    background: #111827;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.recharge-info p {
+    margin: 8px 0;
+    font-size: 15px;
+}
+
+.recharge-box label {
+    font-size: 14px;
+}
+
+.recharge-box input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: none;
+    background: #111827;
+    color: white;
+    font-size: 16px;
+}
+
+.recharge-box input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #22c55e;
+}
+
+.recharge-box button {
+    width: 100%;
+    padding: 14px;
+    background: #22c55e;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.recharge-box button:hover {
+    background: #16a34a;
+}
+</style>
+
+<div class="recharge-box">
+    <h2>Recharge Wallet</h2>
+
+    <div class="recharge-info">
+        <p><b>Current Balance:</b> ₹{{ balance }}</p>
+        <p><b>Payable Amount:</b> ₹{{ amount }}</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label>Recharge Amount</label>
+        <input type="number" name="recharge" placeholder="Enter amount" required>
+
+        <button type="submit">Recharge & Continue</button>
+    </form>
+</div>
+
+{% endblock %}

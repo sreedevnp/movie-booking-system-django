@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flickzy - Forgot Password</title>
+
+<style>
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("{% static 'regis/img/flickzy_bg.png' %}") no-repeat center center/cover;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+/* Glass box */
+.glass-box {
+    width: 420px;
+    padding: 35px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+
+    animation: fadeUp .7s ease forwards;  /* FIXED */
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    background: linear-gradient(90deg,#ff7cab,#ff005d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.input-group {
+    position: relative;
+    margin: 22px 0;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.25);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    transition: .2s;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+}
+
+.input-group input:focus {
+    border-color: #ff005d;
+    box-shadow: 0 0 6px #ff005d66;
+}
+
+/* Registration style button (Pink glowing) */
+.reset-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff005d;
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+
+    box-shadow: 0 6px 18px rgba(255,0,93,0.20);
+    transition: 0.25s ease;
+}
+
+.reset-btn:hover {
+    transform: scale(1.03);
+    background: #e40046;
+}
+
+</style>
+</head>
+<body>
+
+<div class="glass-box">
+
+    <h2>Forgot Password</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <input type="email" name="email" required placeholder="Enter your email">
+        </div>
+
+        <button type="submit" name="send_otp" class="reset-btn">Send OTP</button>
+
+        {% if otp_sent %}
+        <div class="input-group">
+            <input type="text" name="otp" required placeholder="Enter OTP">
+        </div>
+
+        <button type="submit" name="verify_otp" class="reset-btn">Verify OTP</button>
+        {% endif %}
+    </form>
+
+</div>
+
+</body>
+</html>

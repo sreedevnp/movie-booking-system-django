@@ -1,0 +1,73 @@
+{% extends 'userp.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .acc {
+    width: 420px;
+    margin: 180px auto;
+    background: #1f2937;
+    padding: 30px;
+    border-radius: 14px;
+    color: white;
+}
+
+.acc h2 {
+    margin-bottom: 20px;
+}
+
+.acc label {
+    font-size: 14px;
+}
+
+.acc input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 15px;
+    border-radius: 8px;
+    border: none;
+    background: #111827;
+    color: white;
+}
+
+.acc button {
+    width: 100%;
+    padding: 12px;
+    background: #22c55e;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.acc button:hover {
+    background: #16a34a;
+}
+</style>
+
+
+<div class="acc">
+    <h2>Account verify</h2>
+    <form method="POST">
+        {% csrf_token %}
+            <label>Cardholder Name  </label>
+            <br>
+            <input type="text" name="c_name">
+            <br>
+            <label>Account Number  </label>
+            <br>
+            <input type="text" name="acc_no">
+            <br>
+            <label>IFSC CODE</label>
+            <br>
+            <input type="text" name="ifsc">
+            <br>
+            <label>CVV</label>
+            <br>
+            <input type="password" name="cvv">
+            <br>
+            <button type="submit">Verify</button>
+    </form>
+</div>
+{% endblock %}
